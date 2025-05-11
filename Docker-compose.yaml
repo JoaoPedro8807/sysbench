@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
@@ -21,10 +23,16 @@ services:
   sysbench:
     image: severalnines/sysbench
     container_name: sysbench
-    depends_on:
-      mysql:
-        condition: service_healthy
-    entrypoint: tail -f /dev/null  # Mantém o container rodando pra você executar comandos manualmente
+    entrypoint: tail -f /dev/null
+    networks:
+      - sysbench
+      
+    volumes:
+      - ./comandos/benchmark.sh:/usr/local/bin/benchmark.sh
+
+networks:
+  sysbench:
+    external: true
 
 volumes:
   mysql_data:
